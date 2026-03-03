@@ -1,0 +1,89 @@
+{
+  "name": "css-reference-counter-and-peek",
+  "displayName": "CSS Reference Counter and Peek",
+  "description": "Shows how many times each CSS selector is used across your project with CodeLens annotations, Ctrl+Click navigation, and Find All References.",
+  "version": "1.0.0",
+  "publisher": "JatinShimpi",
+  "icon": "icon.png",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JatinShimpi/css-reference-counter-and-peek"
+  },
+  "keywords": [
+    "css",
+    "scss",
+    "references",
+    "codelens",
+    "peek",
+    "unused css",
+    "dead code"
+  ],
+  "galleryBanner": {
+    "color": "#1e1e2e",
+    "theme": "dark"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:css",
+    "onLanguage:scss",
+    "onLanguage:html",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescriptreact",
+    "onLanguage:vue",
+    "onLanguage:svelte"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cssReferenceCounter.rescan",
+        "title": "CSS Reference Counter: Rescan Workspace"
+      }
+    ],
+    "configuration": {
+      "title": "CSS Reference Counter",
+      "properties": {
+        "cssReferenceCounter.includedFileTypes": {
+          "type": "array",
+          "default": [
+            "html",
+            "htm",
+            "jsx",
+            "tsx",
+            "vue",
+            "svelte"
+          ],
+          "description": "File extensions to scan for CSS class/id usage."
+        },
+        "cssReferenceCounter.excludePatterns": {
+          "type": "array",
+          "default": [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/.git/**"
+          ],
+          "description": "Glob patterns to exclude from scanning."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}
