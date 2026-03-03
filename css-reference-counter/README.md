@@ -7,13 +7,22 @@ A VS Code extension that shows how many times each CSS selector is used across y
 ### Inline Usage Count (CodeLens)
 Displays `implementations: N` above each CSS rule in `.css` and `.scss` files. Selectors with zero usages are easy to spot, helping you identify and remove dead CSS.
 
-Clicking the count opens the references panel showing all usage locations.
+![CodeLens showing implementation count above CSS selectors](https://raw.githubusercontent.com/JatinShimpi/css-reference-counter-and-peek/main/images/codelens-demo.png)
 
 ### Go to Definition
 Ctrl+Click on a class name inside `class="..."` or `className="..."` in HTML, JSX, TSX, or Vue files to jump directly to its CSS declaration.
 
+![Go to definition from JSX className to CSS](https://raw.githubusercontent.com/JatinShimpi/css-reference-counter-and-peek/main/images/go-to-definition.png)
+
+### Multiple Usage Count
+Tracks usage across the entire project. A selector used in many places shows the total count.
+
+![Usage count of 4 for .page-title](https://raw.githubusercontent.com/JatinShimpi/css-reference-counter-and-peek/main/images/usage-count.png)
+
 ### Find All References
 Right-click a CSS selector and choose "Find All References" to see every file where that class or ID is used.
+
+![Find all references panel showing 12 locations](https://raw.githubusercontent.com/JatinShimpi/css-reference-counter-and-peek/main/images/find-all-references.png)
 
 ### Smart Scanning
 - On first activation, the extension performs a full background scan with a progress indicator.
