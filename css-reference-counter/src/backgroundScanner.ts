@@ -51,7 +51,7 @@ export class BackgroundScanner {
 
                         // For CSS files we still need openTextDocument since CssParser uses it
                         const doc = await vscode.workspace.openTextDocument(file);
-                        this.cacheManager.updateCssFile(doc);
+                        this.cacheManager.updateCssFileBatch(doc);
                     } catch { /* skip */ }
                     processed++;
                     if (processed % 20 === 0) {
@@ -64,7 +64,7 @@ export class BackgroundScanner {
                 progress.report({ message: 'Finding usage files...' });
 
                 const includedTypes = config.get<string[]>('includedFileTypes', [
-                    'html', 'htm', 'jsx', 'tsx', 'vue', 'svelte'
+                    'html', 'htm', 'jsx', 'tsx', 'vue', 'svelte', 'js', 'ts'
                 ]);
                 const extGlob = '**/*.{' + includedTypes.join(',') + '}';
 
@@ -89,7 +89,7 @@ export class BackgroundScanner {
 
                                 // Read raw bytes — MUCH faster than openTextDocument
                                 const rawBytes = await vscode.workspace.fs.readFile(file);
-                                const text = Buffer.from(rawBytes).toString('utf-8');
+                                const text = new TextDecoder('utf-8').decode(rawBytes);
                                 const usages = this.rawScanner.scanRawText(text, file);
                                 this.cacheManager.updateConsumerFileRaw(file, usages);
                             } catch { /* skip */ }

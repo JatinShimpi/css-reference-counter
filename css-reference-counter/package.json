@@ -2,7 +2,7 @@
   "name": "css-reference-counter-and-peek",
   "displayName": "CSS Reference Counter and Peek",
   "description": "Shows how many times each CSS selector is used across your project with CodeLens annotations, Ctrl+Click navigation, and Find All References.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "JatinShimpi",
   "icon": "icon.png",
   "license": "MIT",
@@ -58,7 +58,9 @@
             "jsx",
             "tsx",
             "vue",
-            "svelte"
+            "svelte",
+            "js",
+            "ts"
           ],
           "description": "File extensions to scan for CSS class/id usage."
         },

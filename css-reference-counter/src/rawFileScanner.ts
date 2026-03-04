@@ -50,6 +50,13 @@ export class RawFileScanner {
             const value = match[1] || match[2];
             if (!value) { continue; }
 
+            // Skip if this is actually a className match (not class)
+            // e.g. className="foo" should only be caught by the className regex
+            if (mode === 'class-multi' && type === 'class') {
+                const before = text.substring(Math.max(0, match.index - 4), match.index);
+                if (before.endsWith('Name') || before.endsWith('name')) { continue; }
+            }
+
             if (mode === 'class-multi') {
                 // Split space-separated classes
                 const names = value.split(/\s+/).filter(n => n.length > 0);

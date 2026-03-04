@@ -50,6 +50,16 @@ export class CacheManager {
     }
 
     /**
+     * Parse and cache a CSS/SCSS document without rebuilding aggregates.
+     * Used during background scan — call batchUpdateDone() after all files.
+     */
+    updateCssFileBatch(document: vscode.TextDocument): void {
+        const key = document.uri.toString();
+        const declarations = this.cssParser.parseDocument(document);
+        this.cssFiles.set(key, declarations);
+    }
+
+    /**
      * Update cache with pre-scanned raw usage data (from BackgroundScanner).
      * Does NOT rebuild aggregates — call batchUpdateDone() after bulk inserts.
      */
