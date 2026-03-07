@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { SelectorDeclaration, UsageLocation, FileCacheEntry } from './types';
 import { CssParser } from './cssParser';
 import { UsageScanner } from './usageScanner';
+import { PersistentCache } from './persistentCache';
 
 /**
  * In-memory cache for CSS declarations and their usages.
@@ -22,10 +23,36 @@ export class CacheManager {
 
     private cssParser = new CssParser();
     private usageScanner = new UsageScanner();
+    private persistentCache: PersistentCache | undefined;
+
+    /** Tracks file modification timestamps for delta scanning */
+    private fileTimestamps = new Map<string, number>();
+
+    /** Whether a background scan is in progress */
+    private _isScanning = false;
 
     private _onDidChange = new vscode.EventEmitter<void>();
     /** Fires when the cache is updated */
     readonly onDidChange = this._onDidChange.event;
+
+    private _onDidChangeScanState = new vscode.EventEmitter<boolean>();
+    /** Fires when scanning state changes (true = scanning, false = done) */
+    readonly onDidChangeScanState = this._onDidChangeScanState.event;
+
+    /** Whether a background scan is currently in progress */
+    get isScanning(): boolean {
+        return this._isScanning;
+    }
+
+    /** Set the scanning state */
+    setScanning(value: boolean): void {
+        this._isScanning = value;
+        this._onDidChangeScanState.fire(value);
+        if (!value) {
+            // When scan completes, refresh CodeLens
+            this._onDidChange.fire();
+        }
+    }
 
     /**
      * Parse and cache a CSS/SCSS document.
@@ -73,6 +100,10 @@ export class CacheManager {
     batchUpdateDone(): void {
         this.rebuildAggregates();
         this._onDidChange.fire();
+        // Persist cache to disk after a full scan (fire-and-catch)
+        this.saveCache().catch(err => {
+            console.warn('CSS Reference Counter: Failed to persist cache:', err);
+        });
     }
 
     /**
@@ -148,6 +179,58 @@ export class CacheManager {
      */
     getUsageScanner(): UsageScanner {
         return this.usageScanner;
+    }
+
+    // ─── Persistence support ──────────────────────────────────────────
+
+    /** Initialize persistence with a workspace storage URI */
+    initPersistence(storageUri: vscode.Uri | undefined): void {
+        this.persistentCache = new PersistentCache(storageUri);
+    }
+
+    /** Get the file timestamps map (for delta scanning) */
+    getFileTimestamps(): Map<string, number> {
+        return this.fileTimestamps;
+    }
+
+    /** Set a file's modification timestamp */
+    setFileTimestamp(fileUri: string, mtime: number): void {
+        this.fileTimestamps.set(fileUri, mtime);
+    }
+
+    /** Get read-only access to internal CSS files map (for persistence) */
+    getCssFilesMap(): Map<string, SelectorDeclaration[]> {
+        return this.cssFiles;
+    }
+
+    /** Get read-only access to internal consumer files map (for persistence) */
+    getConsumerFilesMap(): Map<string, Map<string, UsageLocation[]>> {
+        return this.consumerFiles;
+    }
+
+    /**
+     * Load cached data from disk. Returns true if cache was loaded successfully.
+     */
+    async loadFromCache(): Promise<boolean> {
+        if (!this.persistentCache) { return false; }
+
+        const cached = await this.persistentCache.load();
+        if (!cached) { return false; }
+
+        this.cssFiles = cached.cssFiles;
+        this.consumerFiles = cached.consumerFiles;
+        this.fileTimestamps = cached.fileTimestamps;
+        this.rebuildAggregates();
+        this._onDidChange.fire();
+        return true;
+    }
+
+    /**
+     * Save current cache to disk.
+     */
+    async saveCache(): Promise<void> {
+        if (!this.persistentCache) { return; }
+        await this.persistentCache.save(this.cssFiles, this.consumerFiles, this.fileTimestamps);
     }
 
     /**

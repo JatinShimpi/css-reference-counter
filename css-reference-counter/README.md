@@ -24,16 +24,23 @@ Right-click a CSS selector and choose "Find All References" to see every file wh
 
 ![Find all references panel showing 12 locations](https://raw.githubusercontent.com/JatinShimpi/css-reference-counter/main/css-reference-counter/images/find-all-references.png)
 
+### Sidebar Panel
+A dedicated panel in the Activity Bar showing:
+- Scan status with live progress
+- Number of CSS/SCSS files and selectors indexed
+- A **Rescan Workspace** button to manually re-scan
+
 ### Smart Scanning
-- On first activation, the extension performs a full background scan with a progress indicator.
-- After that, it updates incrementally as you edit and save files.
+- Scan results are **cached to disk** — subsequent activations load instantly without rescanning the entire workspace.
+- Only files that have been **modified since the last scan** are re-scanned (delta scanning).
+- Live updates as you edit and save files.
 - File creation, deletion, and renames are handled automatically.
 
 ## Supported Files
 
 CSS declarations are read from `.css` and `.scss` files.
 
-Usage is detected in `.html`, `.htm`, `.jsx`, `.tsx`, `.vue`, and `.svelte` files.
+Usage is detected in `.html`, `.htm`, `.jsx`, `.tsx`, `.js`, `.ts`, `.vue`, and `.svelte` files.
 
 ### Detected Patterns
 - `class="foo bar"`
@@ -45,12 +52,69 @@ Usage is detected in `.html`, `.htm`, `.jsx`, `.tsx`, `.vue`, and `.svelte` file
 
 ## Commands
 
-- **CSS Reference Counter: Rescan Workspace** - Manually trigger a full workspace rescan.
+- **CSS Reference Counter: Rescan Workspace** — Manually trigger a full workspace rescan. Also available from the sidebar panel.
 
 ## Settings
 
-- `cssReferenceCounter.includedFileTypes` - File extensions to scan for usage. Default: `["html", "htm", "jsx", "tsx", "vue", "svelte"]`
-- `cssReferenceCounter.excludePatterns` - Glob patterns to exclude from scanning. Default: `["**/node_modules/**", "**/dist/**", "**/build/**", "**/.git/**"]`
+### `cssReferenceCounter.includedFileTypes`
+File extensions to scan for CSS class/id usage.
+
+**Default:** `["html", "htm", "jsx", "tsx", "vue", "svelte", "js", "ts"]`
+
+### `cssReferenceCounter.excludePatterns`
+Glob patterns for files and folders to **exclude** from scanning.
+
+**Default:**
+```json
+[
+  "**/node_modules/**",
+  "**/dist/**",
+  "**/build/**",
+  "**/.git/**",
+  "**/target/**",
+  "**/out/**",
+  "**/vendor/**",
+  "**/bower_components/**",
+  "**/.next/**",
+  "**/.nuxt/**",
+  "**/coverage/**",
+  "**/__pycache__/**",
+  "**/.venv/**",
+  "**/*.min.js",
+  "**/*.min.css",
+  "**/.svelte-kit/**",
+  "**/.angular/**",
+  "**/.cache/**",
+  "**/tmp/**",
+  "**/public/assets/**"
+]
+```
+
+#### Customizing Excluded Folders
+
+If your project has folders you want to exclude (e.g. a backend API folder, a Rust `target` directory, or generated files), add them to your workspace or user settings:
+
+1. Open **Settings** (`Ctrl+,`)
+2. Search for `cssReferenceCounter.excludePatterns`
+3. Add your patterns
+
+Or add directly in `.vscode/settings.json`:
+```json
+{
+  "cssReferenceCounter.excludePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.git/**",
+    "**/target/**",
+    "**/api/**",
+    "**/server/**",
+    "**/my-custom-folder/**"
+  ]
+}
+```
+
+> **Note:** When you override this setting, it replaces the full default list. Make sure to include the base patterns you still want.
 
 ## Development
 
@@ -60,6 +124,20 @@ npm run compile
 ```
 
 Press F5 in VS Code to launch the Extension Development Host for testing.
+
+## Bug Reports & Feedback
+
+Found a bug or have a feature request? We'd love to hear from you!
+
+- 🐛 **Report a Bug:** [Open an issue on GitHub](https://github.com/JatinShimpi/css-reference-counter/issues/new?labels=bug&template=bug_report.md)
+- 💡 **Request a Feature:** [Open a feature request](https://github.com/JatinShimpi/css-reference-counter/issues/new?labels=enhancement&template=feature_request.md)
+- ⭐ **Like the extension?** [Leave a review on the Marketplace](https://marketplace.visualstudio.com/items?itemName=JatinShimpi.css-reference-counter-and-peek&ssr=false#review-details)
+
+When reporting a bug, please include:
+1. VS Code version (`Help > About`)
+2. Extension version
+3. Steps to reproduce the issue
+4. Relevant output from the **Output** panel → **Extension Host**
 
 ## License
 

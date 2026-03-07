@@ -13,9 +13,18 @@ export class CssCodeLensProvider implements vscode.CodeLensProvider {
         cacheManager.onDidChange(() => {
             this._onDidChangeCodeLenses.fire();
         });
+        // Also refresh when scan state changes
+        cacheManager.onDidChangeScanState(() => {
+            this._onDidChangeCodeLenses.fire();
+        });
     }
 
     provideCodeLenses(document: vscode.TextDocument, _token: vscode.CancellationToken): vscode.CodeLens[] {
+        // Hide counts while scanning — avoid misleading "0" flash
+        if (this.cacheManager.isScanning) {
+            return [];
+        }
+
         const declarations = this.cacheManager.getDeclarationsForFile(document.uri);
         const lenses: vscode.CodeLens[] = [];
 

@@ -51,6 +51,8 @@ export class FileWatcher implements vscode.Disposable {
         let debounceTimer: NodeJS.Timeout | undefined;
         this.disposables.push(
             vscode.workspace.onDidChangeTextDocument((event) => {
+                // Skip events with no content changes (e.g. file opened, not edited)
+                if (event.contentChanges.length === 0) { return; }
                 if (debounceTimer) { clearTimeout(debounceTimer); }
                 debounceTimer = setTimeout(() => {
                     this.onDocumentChanged(event.document);
@@ -60,6 +62,9 @@ export class FileWatcher implements vscode.Disposable {
     }
 
     private onDocumentSaved(document: vscode.TextDocument): void {
+        // Skip during background scan — it handles everything
+        if (this.cacheManager.isScanning) { return; }
+
         if (FileWatcher.CSS_LANGUAGES.has(document.languageId)) {
             this.cacheManager.updateCssFile(document);
         } else if (UsageScanner.isConsumerFile(document)) {
@@ -68,6 +73,9 @@ export class FileWatcher implements vscode.Disposable {
     }
 
     private onDocumentChanged(document: vscode.TextDocument): void {
+        // Skip during background scan — it handles everything
+        if (this.cacheManager.isScanning) { return; }
+
         if (FileWatcher.CSS_LANGUAGES.has(document.languageId)) {
             this.cacheManager.updateCssFile(document);
         } else if (UsageScanner.isConsumerFile(document)) {

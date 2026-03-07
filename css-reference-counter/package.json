@@ -2,7 +2,7 @@
   "name": "css-reference-counter-and-peek",
   "displayName": "CSS Reference Counter and Peek",
   "description": "Shows how many times each CSS selector is used across your project with CodeLens annotations, Ctrl+Click navigation, and Find All References.",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "publisher": "JatinShimpi",
   "icon": "icon.png",
   "license": "MIT",
@@ -44,9 +44,58 @@
     "commands": [
       {
         "command": "cssReferenceCounter.rescan",
-        "title": "CSS Reference Counter: Rescan Workspace"
+        "title": "CSS Reference Counter: Rescan Workspace",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "cssReferenceCounter.addExcludePattern",
+        "title": "CSS Reference Counter: Add Exclude Pattern",
+        "icon": "$(add)"
+      },
+      {
+        "command": "cssReferenceCounter.removeExcludePattern",
+        "title": "CSS Reference Counter: Remove Exclude Pattern",
+        "icon": "$(trash)"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "cssReferenceCounter",
+          "title": "CSS Reference Counter",
+          "icon": "images/sidebar-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "cssReferenceCounter": [
+        {
+          "id": "cssReferenceCounter.sidebar",
+          "name": "CSS References"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "cssReferenceCounter.rescan",
+          "when": "view == cssReferenceCounter.sidebar",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "cssReferenceCounter.removeExcludePattern",
+          "when": "view == cssReferenceCounter.sidebar && viewItem == excludePatternItem",
+          "group": "inline"
+        },
+        {
+          "command": "cssReferenceCounter.addExcludePattern",
+          "when": "view == cssReferenceCounter.sidebar && viewItem == excludeSection",
+          "group": "inline"
+        }
+      ]
+    },
     "configuration": {
       "title": "CSS Reference Counter",
       "properties": {
@@ -70,7 +119,23 @@
             "**/node_modules/**",
             "**/dist/**",
             "**/build/**",
-            "**/.git/**"
+            "**/.git/**",
+            "**/target/**",
+            "**/out/**",
+            "**/vendor/**",
+            "**/bower_components/**",
+            "**/.next/**",
+            "**/.nuxt/**",
+            "**/coverage/**",
+            "**/__pycache__/**",
+            "**/.venv/**",
+            "**/*.min.js",
+            "**/*.min.css",
+            "**/.svelte-kit/**",
+            "**/.angular/**",
+            "**/.cache/**",
+            "**/tmp/**",
+            "**/public/assets/**"
           ],
           "description": "Glob patterns to exclude from scanning."
         }
