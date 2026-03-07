@@ -25,22 +25,23 @@ Right-click a CSS selector and choose "Find All References" to see every file wh
 ![Find all references panel showing 12 locations](https://raw.githubusercontent.com/JatinShimpi/css-reference-counter/main/css-reference-counter/images/find-all-references.png)
 
 ### Sidebar Panel
-A dedicated panel in the Activity Bar showing:
-- Scan status with live progress
-- Number of CSS/SCSS files and selectors indexed
-- A **Rescan Workspace** button to manually re-scan
+A dedicated **CSS Reference Counter** panel in the Activity Bar with:
+- **Scan status** — live spinner while scanning, checkmark when done
+- **Stats** — number of CSS/SCSS files and selectors indexed
+- **Excluded Folders** — view, add, and remove exclude patterns directly from the sidebar
+- **Rescan Workspace** — one-click rescan button
 
 ### Smart Scanning
-- Scan results are **cached to disk** — subsequent activations load instantly without rescanning the entire workspace.
-- Only files that have been **modified since the last scan** are re-scanned (delta scanning).
-- Live updates as you edit and save files.
+- **Cached to disk** — scan results persist between VS Code sessions. No full rescan on every startup.
+- **Delta scanning** — only files modified since the last scan are re-scanned.
+- **Live updates** — edits and saves update counts in real-time.
 - File creation, deletion, and renames are handled automatically.
 
 ## Supported Files
 
-CSS declarations are read from `.css` and `.scss` files.
+**CSS declarations** are read from `.css` and `.scss` files.
 
-Usage is detected in `.html`, `.htm`, `.jsx`, `.tsx`, `.js`, `.ts`, `.vue`, and `.svelte` files.
+**Usage detection** in `.html`, `.htm`, `.jsx`, `.tsx`, `.js`, `.ts`, `.vue`, and `.svelte` files.
 
 ### Detected Patterns
 - `class="foo bar"`
@@ -52,7 +53,11 @@ Usage is detected in `.html`, `.htm`, `.jsx`, `.tsx`, `.js`, `.ts`, `.vue`, and 
 
 ## Commands
 
-- **CSS Reference Counter: Rescan Workspace** — Manually trigger a full workspace rescan. Also available from the sidebar panel.
+| Command | Description |
+|---------|-------------|
+| **CSS Reference Counter: Rescan Workspace** | Trigger a full workspace rescan |
+| **CSS Reference Counter: Add Exclude Pattern** | Add a folder/pattern to exclude |
+| **CSS Reference Counter: Remove Exclude Pattern** | Remove an exclude pattern |
 
 ## Settings
 
@@ -64,36 +69,18 @@ File extensions to scan for CSS class/id usage.
 ### `cssReferenceCounter.excludePatterns`
 Glob patterns for files and folders to **exclude** from scanning.
 
-**Default:**
-```json
-[
-  "**/node_modules/**",
-  "**/dist/**",
-  "**/build/**",
-  "**/.git/**",
-  "**/target/**",
-  "**/out/**",
-  "**/vendor/**",
-  "**/bower_components/**",
-  "**/.next/**",
-  "**/.nuxt/**",
-  "**/coverage/**",
-  "**/__pycache__/**",
-  "**/.venv/**",
-  "**/*.min.js",
-  "**/*.min.css",
-  "**/.svelte-kit/**",
-  "**/.angular/**",
-  "**/.cache/**",
-  "**/tmp/**",
-  "**/public/assets/**"
-]
-```
+**Default excludes:** `node_modules`, `dist`, `build`, `.git`, `target`, `out`, `vendor`, `bower_components`, `.next`, `.nuxt`, `coverage`, `__pycache__`, `.venv`, `.svelte-kit`, `.angular`, `.cache`, `tmp`, `public/assets`, and all `*.min.js` / `*.min.css` files.
 
-#### Customizing Excluded Folders
+### Customizing Excluded Folders
 
-If your project has folders you want to exclude (e.g. a backend API folder, a Rust `target` directory, or generated files), add them to your workspace or user settings:
+You can manage excluded folders in **two ways**:
 
+**From the sidebar:**
+1. Open the **CSS Reference Counter** panel in the Activity Bar
+2. Expand **Excluded Folders**
+3. Click **➕** to add a new pattern, or click a pattern to remove it
+
+**From settings:**
 1. Open **Settings** (`Ctrl+,`)
 2. Search for `cssReferenceCounter.excludePatterns`
 3. Add your patterns
@@ -108,30 +95,20 @@ Or add directly in `.vscode/settings.json`:
     "**/.git/**",
     "**/target/**",
     "**/api/**",
-    "**/server/**",
-    "**/my-custom-folder/**"
+    "**/my-backend/**"
   ]
 }
 ```
 
 > **Note:** When you override this setting, it replaces the full default list. Make sure to include the base patterns you still want.
 
-## Development
-
-```bash
-npm install
-npm run compile
-```
-
-Press F5 in VS Code to launch the Extension Development Host for testing.
-
 ## Bug Reports & Feedback
 
 Found a bug or have a feature request? We'd love to hear from you!
 
-- 🐛 **Report a Bug:** [Open an issue on GitHub](https://github.com/JatinShimpi/css-reference-counter/issues/new?labels=bug&template=bug_report.md)
-- 💡 **Request a Feature:** [Open a feature request](https://github.com/JatinShimpi/css-reference-counter/issues/new?labels=enhancement&template=feature_request.md)
-- ⭐ **Like the extension?** [Leave a review on the Marketplace](https://marketplace.visualstudio.com/items?itemName=JatinShimpi.css-reference-counter-and-peek&ssr=false#review-details)
+- **Report a Bug:** [Open an issue on GitHub](https://github.com/JatinShimpi/css-reference-counter/issues/new?labels=bug&template=bug_report.md)
+- **Request a Feature:** [Open a feature request](https://github.com/JatinShimpi/css-reference-counter/issues/new?labels=enhancement&template=feature_request.md)
+- **Like the extension?** [Leave a review on the Marketplace](https://marketplace.visualstudio.com/items?itemName=JatinShimpi.css-reference-counter-and-peek&ssr=false#review-details)
 
 When reporting a bug, please include:
 1. VS Code version (`Help > About`)
